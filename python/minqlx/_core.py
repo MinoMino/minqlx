@@ -219,15 +219,16 @@ def set_plugins_version(path):
     setattr(minqlx, "__plugins_version__", "{}-{}".format(version, branch))
 
 def set_map_subtitles():
-    cs = minqlx.get_configstring(678)
-    if cs:
-        cs += " - "
-    minqlx.set_configstring(678, cs + "Running minqlx ^6{}^7 with plugins ^6{}^7."
-        .format(minqlx.__version__, minqlx.__plugins_version__))
-    cs = minqlx.get_configstring(679)
-    if cs:
-        cs += " - "
-    minqlx.set_configstring(679, cs + "Check ^6http://github.com/MinoMino/minqlx^7 for more details.")
+    if (minqlx.get_cvar("qlx_minqlxSelfBrand", bool)):
+        cs = minqlx.get_configstring(678)
+        if cs:
+            cs += " - "
+        minqlx.set_configstring(678, cs + "Running minqlx ^6{}^7 with plugins ^6{}^7."
+            .format(minqlx.__version__, minqlx.__plugins_version__))
+        cs = minqlx.get_configstring(679)
+        if cs:
+            cs += " - "
+        minqlx.set_configstring(679, cs + "Check ^6http://github.com/MinoMino/minqlx^7 for more details.")
 
 # ====================================================================
 #                              DECORATORS
@@ -394,6 +395,7 @@ def initialize_cvars():
     minqlx.set_cvar_once("qlx_commandPrefix", "!")
     minqlx.set_cvar_once("qlx_logs", "2")
     minqlx.set_cvar_once("qlx_logsSize", str(3*10**6)) # 3 MB
+    minqlx.set_cvar_once("qlx_minqlxSelfBrand", "1")
     # Redis
     minqlx.set_cvar_once("qlx_redisAddress", "127.0.0.1")
     minqlx.set_cvar_once("qlx_redisDatabase", "0")
