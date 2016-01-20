@@ -219,7 +219,7 @@ def set_plugins_version(path):
     setattr(minqlx, "__plugins_version__", "{}-{}".format(version, branch))
 
 def set_map_subtitles():
-    if not (minqlx.get_cvar("qlx_minqlxSelfBrand", bool)):
+    if (minqlx.get_cvar("qlx_minqlxSelfBrand", bool)):
         cs = minqlx.get_configstring(678)
         if cs:
             cs += " - "
