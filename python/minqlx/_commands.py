@@ -62,12 +62,12 @@ class Command:
 
     def is_eligible_name(self, name):
         if self.prefix:
-            prefix = minqlx.get_cvar("qlx_commandPrefix")
-            if not name.startswith(prefix):
-                return False
-            name = name[len(prefix):]
-        
-        return name.lower() in self.name
+            prefixes = minqlx.get_cvar("qlx_commandPrefix")
+            for prefix in prefixes.split(","):
+                if name.startswith(prefix):
+                    name = name[len(prefix):]
+                    return name.lower() in self.name
+            return False
 
     def is_eligible_channel(self, channel):
         """Check if a chat channel is one this command should execute in.
