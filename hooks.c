@@ -313,29 +313,37 @@ void HookVm(void) {
 #ifndef NOPY
 	*(void**)(vm_call_table + RELOFFSET_VM_CALL_RUNFRAME) = My_G_RunFrame;
 
-	int res, failed = 0;
+	int res, failed = 0, count = 0;
 	res = Hook((void*)ClientConnect, My_ClientConnect, (void*)&ClientConnect);
 	if (res) {
 		DebugPrint("ERROR: Failed to hook ClientConnect: %d\n", res);
 		failed = 1;
 	}
+  count++;
 
     res = Hook((void*)G_StartKamikaze, My_G_StartKamikaze, (void*)&G_StartKamikaze);
     if (res) {
         DebugPrint("ERROR: Failed to hook G_StartKamikaze: %d\n", res);
         failed = 1;
     }
+    count++;
 
     res = Hook((void*)ClientSpawn, My_ClientSpawn, (void*)&ClientSpawn);
     if (res) {
         DebugPrint("ERROR: Failed to hook ClientSpawn: %d\n", res);
         failed = 1;
     }
+    count++;
 
 	if (failed) {
 		DebugPrint("Exiting.\n");
 		exit(1);
 	}
+
+    if ( !seek_hook_slot( -count ) ) {
+        DebugPrint("ERROR: Failed to rewind hook slot\nExiting.\n");
+        exit(1);
+    }
 #endif
 }
 

@@ -1129,9 +1129,6 @@ static PyObject* PyMinqlx_SetHoldable(PyObject* self, PyObject* args) {
 * ================================================================
 */
 
-// FixMe: holdable pickup is predicted on client (if cg_predictItems == 1)
-//        this generates holdable pickup sound on drop
-
 void __cdecl Switch_Touch_Item(gentity_t *ent) {
     ent->touch = (void*)Touch_Item;
     ent->think = G_FreeEntity;
@@ -1145,6 +1142,8 @@ void __cdecl My_Touch_Item(gentity_t *ent, gentity_t *other, trace_t *trace) {
 
 static PyObject* PyMinqlx_DropHoldable(PyObject* self, PyObject* args) {
     int client_id, item;
+    vec3_t velocity;
+    vec_t angle;
     if (!PyArg_ParseTuple(args, "i:drop_holdable", &client_id))
         return NULL;
     else if (client_id < 0 || client_id >= sv_maxclients->integer) {
@@ -1162,11 +1161,17 @@ static PyObject* PyMinqlx_DropHoldable(PyObject* self, PyObject* args) {
     item = g_entities[client_id].client->ps.stats[STAT_HOLDABLE_ITEM];
     if (item == 0) Py_RETURN_FALSE;
 
-    gentity_t* entity = Drop_Item(&g_entities[client_id], bg_itemlist + item, 0);
+    angle = g_entities[client_id].s.apos.trBase[1] * (M_PI*2 / 360);
+    velocity[0] = 150*cos(angle);
+    velocity[1] = 150*sin(angle);
+    velocity[2] = 250;
+
+    gentity_t* entity = LaunchItem(bg_itemlist + item, g_entities[client_id].s.pos.trBase, velocity);
     entity->touch     = (void*)My_Touch_Item;
     entity->parent    = &g_entities[client_id];
     entity->think     = Switch_Touch_Item;
     entity->nextthink = level->time + 1000;
+    entity->s.pos.trTime = level->time - 500;
 
     // removing holdable from player entity
     g_entities[client_id].client->ps.stats[STAT_HOLDABLE_ITEM] = 0;
@@ -1409,6 +1414,8 @@ static PyObject* PyMinqlx_SpawnItem(PyObject* self, PyObject* args) {
     gentity_t* ent = LaunchItem(bg_itemlist + item_id, origin, velocity);
     ent->nextthink = 0;
     ent->think = 0;
+    G_AddEvent(ent, EV_ITEM_RESPAWN, 0); // make item be scaled up
+
     Py_RETURN_TRUE;
 }
 
@@ -1635,6 +1642,42 @@ static PyObject* PyMinqlx_DevPrintItems(PyObject* self, PyObject* args) {
 }
 
 /*
+* ================================================================
+*                         force_weapon_respawn_time
+* ================================================================
+*/
+
+static PyObject* PyMinqlx_ForceWeaponRespawnTime(PyObject* self, PyObject* args) {
+	int respawn_time;
+    gentity_t* ent;
+	
+	if (!PyArg_ParseTuple(args, "i:force_weapon_respawn_time", &respawn_time))
+		return NULL;
+	
+	if (respawn_time < 0) {    
+        PyErr_Format(PyExc_ValueError, "respawn time needs to be an integer 0 or greater");
+        return NULL;
+    }	
+
+    for (int i=0; i<MAX_GENTITIES; i++) {
+        ent = &g_entities[i];
+
+        if (!ent->inuse)
+            continue;
+
+		if (ent->s.eType != ET_ITEM || ent->item == NULL)
+            continue;		
+		
+		if (ent->item->giType != IT_WEAPON)
+			continue;
+				
+		ent->wait = respawn_time;
+    }
+
+    Py_RETURN_TRUE;
+}
+
+/*
  * ================================================================
  *             Module definition and initialization
  * ================================================================
@@ -1725,6 +1768,8 @@ static PyMethodDef minqlxMethods[] = {
      "Replaces target entity's item with specified one."},
     {"dev_print_items", PyMinqlx_DevPrintItems, METH_NOARGS,
      "Prints all items and entity numbers to server console."},
+    {"force_weapon_respawn_time", PyMinqlx_ForceWeaponRespawnTime, METH_VARARGS,
+     "Force all weapons to have a specified respawn time, overriding custom map respawn times set for them."},
     {NULL, NULL, 0, NULL}
 };
 
