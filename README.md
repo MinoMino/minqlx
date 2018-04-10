@@ -1,5 +1,6 @@
 minqlx
 ======
+-
 minqlx is a modification to the Quake Live Dedicated Server that extends Quake Live's dedicated server with
 extra functionality and allows scripting of server behavior through an embedded Python
 interpreter.
