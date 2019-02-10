@@ -241,7 +241,7 @@ void __cdecl My_ClientThink_real( gentity_t* ent ) {
         client->pers.inactivityTime + msec >= (g_inactivity->integer - g_inactivitywarning->integer) * 1000 &&
         client->sess.sessionTeam != TEAM_SPECTATOR
         ) {
-        ClientInactivityKickWarningDispatcher( client - level->clients );
+        ClientInactivityKickWarningDispatcher( client - svs->clients );
     }
 
     if (
@@ -249,7 +249,7 @@ void __cdecl My_ClientThink_real( gentity_t* ent ) {
       client->pers.inactivityTime + msec >= g_inactivity->integer * 1000 &&
       client->sess.sessionTeam != TEAM_SPECTATOR
     ) {
-        result = ClientInactivityKickDispatcher( client - level->clients );
+        result = ClientInactivityKickDispatcher( client - svs->clients );
         if (result == 0) {
             client->pers.inactivityTime = 0;
             client->pers.inactivityWarning = qfalse;
