@@ -1401,9 +1401,9 @@ static PyObject* PyMinqlx_SpawnItem(PyObject* self, PyObject* args) {
     int item_id, x, y, z;
     if (!PyArg_ParseTuple(args, "iiii:spawn_item", &item_id, &x, &y, &z))
         return NULL;
-    if (item_id < 0 || item_id >= bg_numItems) {
+    if (item_id < 1 || item_id >= bg_numItems) {
         PyErr_Format(PyExc_ValueError,
-                     "item_id needs to be a number from 0 to %d.",
+                     "item_id needs to be a number from 1 to %d.",
                      bg_numItems);
         return NULL;
     }
