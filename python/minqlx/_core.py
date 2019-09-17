@@ -47,12 +47,12 @@ TEAMS = collections.OrderedDict(enumerate(("free", "red", "blue", "spectator")))
 
 # Game type number -> string
 GAMETYPES = collections.OrderedDict([(i, gt) for i, gt in enumerate(("Free for All", "Duel", "Race", "Team Deathmatch",
-    "Clan Arena", "Capture the Flag", "One Flag", "", "Harvester", "Freeze Tag", "Domination", "Attack and Defend",
+    "Clan Arena", "Capture the Flag", "One Flag", "Overload", "Harvester", "Freeze Tag", "Domination", "Attack and Defend",
     "Red Rover")) if gt])
 
 # Game type number -> short string
 GAMETYPES_SHORT = collections.OrderedDict([(i, gt) for i, gt in enumerate(("ffa", "duel", "race", "tdm", "ca", "ctf",
-    "1f", "", "har", "ft", "dom", "ad", "rr")) if gt])
+    "1f", "ol", "har", "ft", "dom", "ad", "rr")) if gt])
 
 # Connection states.
 CONNECTION_STATES = collections.OrderedDict(enumerate(("free", "zombie", "connected", "primed", "active")))
