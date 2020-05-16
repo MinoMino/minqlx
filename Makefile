@@ -15,7 +15,15 @@ BINDIR = bin
 CC = gcc
 CFLAGS += -shared -std=gnu11
 LDFLAGS_NOPY += -ldl
-LDFLAGS += $(shell python3-config --libs)
+
+# First command is required for Python 3.8 and will fail for Python < 3.8
+PYTHON_LD_FLAGS = $(shell python3-config --libs --embed)
+ifneq ($(.SHELLSTATUS), 0)
+	# This command is required for Python < 3.8
+	PYTHON_LD_FLAGS = $(shell python3-config --libs)
+endif
+
+LDFLAGS += $(PYTHON_LD_FLAGS)
 SOURCES_NOPY += dllmain.c commands.c simple_hook.c hooks.c misc.c maps_parser.c trampoline.c patches.c
 SOURCES += dllmain.c commands.c python_embed.c python_dispatchers.c simple_hook.c hooks.c misc.c maps_parser.c trampoline.c patches.c
 OBJS = $(SOURCES:.c=.o)
