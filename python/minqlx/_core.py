@@ -450,10 +450,10 @@ def late_init():
     logger = get_logger()
     # Set our own exception handler so that we can log them if unhandled.
     sys.excepthook = handle_exception
-    
+
     if sys.version_info >= (3, 8):
         threading.excepthook = threading_excepthook
-        
+
     # Add the plugins path to PATH so that we can load plugins later.
     sys.path.append(os.path.dirname(plugins_path))
 
