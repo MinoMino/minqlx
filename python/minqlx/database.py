@@ -313,3 +313,56 @@ class Redis(AbstractDatabase):
             if Redis._pool:
                 Redis._pool.disconnect()
                 Redis._pool = None
+
+    def mset(self, *args, **kwargs):
+        mapping = {}
+        if args:
+            if len(args) != 1 or not isinstance(args[0], dict):
+                raise redis.RedisError("MSET requires **kwargs or a single dict arg")
+            mapping.update(args[0])
+
+        if kwargs:
+            mapping.update(kwargs)
+
+        return self.r.mset(mapping)
+
+    def msetnx(self, *args, **kwargs):
+        mapping = {}
+        if args:
+            if len(args) != 1 or not isinstance(args[0], dict):
+                raise redis.RedisError("MSETNX requires **kwargs or a single dict arg")
+            mapping.update(args[0])
+
+        if kwargs:
+            mapping.update(kwargs)
+
+        return self.r.msetnx(mapping)
+
+    def zadd(self, name, *args, **kwargs):
+        if redis.VERSION < (3, 0):
+            return self.r.zadd(name, *args, **kwargs)
+
+        if isinstance(args[0], dict):
+            return self.r.zadd(name, *args, **kwargs)
+
+        mapping = {}
+        if len(args) > 0:
+            if len(args) % 2 != 0:
+                raise redis.RedisError("ZADD requires an equal number of values and scores")
+
+            for i in range(0, len(args), 2):
+                mapping[args[i + 1]] = args[i]
+
+        return self.r.zadd(name, mapping, **kwargs)
+
+    def zincrby(self, name, value_or_amount, amount_or_value=1):
+        if isinstance(amount_or_value, (int, float)):
+            value = value_or_amount
+            amount = amount_or_value
+        else:
+            value = amount_or_value
+            amount = value_or_amount
+
+        if redis.VERSION < (3, 0):
+            return self.r.zincrby(name, value, amount)  # pylint: disable=W1114
+        return self.r.zincrby(name, amount, value)  # pylint: disable=W1114
