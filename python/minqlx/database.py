@@ -356,7 +356,7 @@ class Redis(AbstractDatabase):
         return self.r.zadd(name, mapping, **kwargs)
 
     def zincrby(self, name, value_or_amount, amount_or_value=1):
-        if isinstance(amount_or_value, (int, float)):
+        if not isinstance(value_or_amount, (int, float)):
             value = value_or_amount
             amount = amount_or_value
         else:
@@ -366,3 +366,27 @@ class Redis(AbstractDatabase):
         if redis.VERSION < (3, 0):
             return self.r.zincrby(name, value, amount)  # pylint: disable=W1114
         return self.r.zincrby(name, amount, value)  # pylint: disable=W1114
+
+    def setex(self, name, value_or_time, time_or_value):
+        if not isinstance(value_or_time, (int, timedelta)):
+            value = value_or_time
+            time = time_or_value
+        else:
+            value = time_or_value
+            time = value_or_time
+
+        if redis.VERSION < (3, 0):
+            return self.r.setex(name, time, value)  # pylint: disable=W1114
+        return self.r.setex(name, value, time)  # pylint: disable=W1114
+
+    def lrem(self, name, value_or_count, num_or_value=0):
+        if not isinstance(value_or_count, int):
+            value = value_or_count
+            count = num_or_value
+        else:
+            value = num_or_value
+            count = value_or_count
+
+        if redis.VERSION < (3, 0):
+            return self.r.lrem(name, count, value)  # pylint: disable=W1114
+        return self.r.lrem(name, value, count)  # pylint: disable=W1114
