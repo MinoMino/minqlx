@@ -367,18 +367,6 @@ class Redis(AbstractDatabase):
             return self.r.zincrby(name, value, amount)  # pylint: disable=W1114
         return self.r.zincrby(name, amount, value)  # pylint: disable=W1114
 
-    def setex(self, name, value_or_time, time_or_value):
-        if not isinstance(value_or_time, (int, timedelta)):
-            value = value_or_time
-            time = time_or_value
-        else:
-            value = time_or_value
-            time = value_or_time
-
-        if redis.VERSION < (3, 0):
-            return self.r.setex(name, time, value)  # pylint: disable=W1114
-        return self.r.setex(name, value, time)  # pylint: disable=W1114
-
     def lrem(self, name, value_or_count, num_or_value=0):
         if not isinstance(value_or_count, int):
             value = value_or_count
