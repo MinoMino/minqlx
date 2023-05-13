@@ -998,7 +998,7 @@ static PyObject* PyMinqlx_SetWeapon(PyObject* self, PyObject* args) {
     }
     else if (!g_entities[client_id].client)
         Py_RETURN_FALSE;
-    else if (weapon < 0 || weapon > 16) {
+    else if (weapon < 0 || weapon >= MAX_WEAPONS) {
         PyErr_Format(PyExc_ValueError, "Weapon must be a number from 0 to 15.");
         return NULL;
     }

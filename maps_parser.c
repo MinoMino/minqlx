@@ -62,7 +62,8 @@ int GetModuleInfo(module_info_t* module_info) {
 
 		ret++;
 	}
-
+	fclose(fp);
+	
 	module_info->entries = ret;
 	return ret;
 }
