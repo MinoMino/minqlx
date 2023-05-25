@@ -1503,7 +1503,11 @@ void replace_item_core(gentity_t* ent, int item_id) {
 static PyObject* PyMinqlx_ReplaceItems(PyObject* self, PyObject* args) {
     PyObject *arg1, *arg2 ;
     int entity_id = 0, item_id = 0;
+    #if PY_VERSION_HEX < ((3 << 24) | (7 << 16))
     char *entity_classname = NULL, *item_classname = NULL;
+    #else 
+    const char *entity_classname = NULL, *item_classname = NULL;
+    #endif
     gentity_t* ent;
 
 
@@ -1925,7 +1929,9 @@ PyMinqlx_InitStatus_t PyMinqlx_Initialize(void) {
     Py_SetProgramName(PYTHON_FILENAME);
     PyImport_AppendInittab("_minqlx", &PyMinqlx_InitModule);
     Py_Initialize();
+    #if PY_VERSION_HEX < ((3 << 24) | (7 << 16))
     PyEval_InitThreads();
+    #endif
 
     // Add the main module.
     PyObject* main_module = PyImport_AddModule("__main__");
