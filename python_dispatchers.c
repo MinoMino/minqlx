@@ -301,7 +301,7 @@ void DamageDispatcher(int target_id, int attacker_id, int damage, int dflags, in
 
     PyGILState_STATE gstate = PyGILState_Ensure();
 
-    PyObject* result
+    PyObject* result;
     if (attacker_id >= 0) {
         result = PyObject_CallFunction(damage_handler, "iiiii", target_id, attacker_id, damage, dflags, mod);
     } else {
