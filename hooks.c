@@ -251,6 +251,7 @@ void __cdecl My_G_Damage(
 
     if (attacker && attacker->client) {
         attacker_id = attacker->client->ps.clientNum;
+    }
 
     DamageDispatcher(target_id, attacker_id, damage, dflags, mod);
 }
