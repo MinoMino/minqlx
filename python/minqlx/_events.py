@@ -30,7 +30,7 @@ class EventDispatcher:
     to hook into events by registering an event handler.
 
     """
-    no_debug = ("frame", "set_configstring", "stats", "server_command", "death", "kill", "command", "console_print")
+    no_debug = ("frame", "set_configstring", "stats", "server_command", "death", "kill", "command", "console_print", "damage")
     need_zmq_stats_enabled = False
 
     def __init__(self):
@@ -581,6 +581,14 @@ class KamikazeExplodeDispatcher(EventDispatcher):
     def dispatch(self, player, is_used_on_demand):
         return super().dispatch(player, is_used_on_demand)
 
+class DamageDispatcher(EventDispatcher):
+    """Event that goes off when someone is inflicted with damage."""
+
+    name = "damage"
+    need_zmq_stats_enabled = False
+
+    def dispatch(self, target, attacker, damage, dflags, mod):
+        return super().dispatch(target, attacker, damage, dflags, mod)
 
 EVENT_DISPATCHERS = EventDispatcherManager()
 EVENT_DISPATCHERS.add_dispatcher(ConsolePrintDispatcher)
@@ -615,3 +623,4 @@ EVENT_DISPATCHERS.add_dispatcher(NewGameDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(KillDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(DeathDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(UserinfoDispatcher)
+EVENT_DISPATCHERS.add_dispatcher(DamageDispatcher)

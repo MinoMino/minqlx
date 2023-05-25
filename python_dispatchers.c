@@ -294,3 +294,16 @@ void KamikazeExplodeDispatcher(int client_id, int is_used_on_demand) {
 
     PyGILState_Release(gstate);
 }
+
+void DamageDispatcher(int target_id, int attacker_id, int damage, int dflags, int mod) {
+    if (!damage_handler)
+        return; // No registered handler
+
+    PyGILState_STATE gstate = PyGILState_Ensure();
+
+    PyObject* result = PyObject_CallFunction(damage_handler, "iiiii", target_id, attacker_id > 0 ? attacker_id : Py_None, damage, dflags, mod);
+
+    Py_XDECREF(result);
+
+    PyGILState_Release(gstate);
+}

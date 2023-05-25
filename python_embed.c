@@ -27,6 +27,8 @@ PyObject* client_spawn_handler = NULL;
 PyObject* kamikaze_use_handler = NULL;
 PyObject* kamikaze_explode_handler = NULL;
 
+PyObject* damage_handler = NULL;
+
 static PyThreadState* mainstate;
 static int initialized = 0;
 
@@ -70,6 +72,8 @@ static handler_t handlers[] = {
 
         {"kamikaze_use",        &kamikaze_use_handler},
         {"kamikaze_explode",    &kamikaze_explode_handler},
+
+        {"damage",              &damage_handler},
 
 		{NULL, NULL}
 };
@@ -1872,6 +1876,13 @@ static PyObject* PyMinqlx_InitModule(void) {
     PyModule_AddIntMacro(module, MOD_LIGHTNING_DISCHARGE);
     PyModule_AddIntMacro(module, MOD_HMG);
     PyModule_AddIntMacro(module, MOD_RAILGUN_HEADSHOT);
+
+    // damage flags
+    PyModule_AddIntMacro(module, DAMAGE_RADIUS);
+    PyModule_AddIntMacro(module, DAMAGE_NO_ARMOR);
+    PyModule_AddIntMacro(module, DAMAGE_NO_KNOCKBACK);
+    PyModule_AddIntMacro(module, DAMAGE_NO_PROTECTION);
+    PyModule_AddIntMacro(module, DAMAGE_NO_TEAM_PROTECTION);
 
     // Initialize struct sequence types.
     PyStructSequence_InitType(&player_info_type, &player_info_desc);
