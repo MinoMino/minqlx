@@ -121,6 +121,7 @@ static PyStructSequence_Field player_state_fields[] = {
     {"powerups", "The player's powerups."},
     {"holdable", "The player's holdable item."},
     {"flight", "A struct sequence with flight parameters."},
+    {"is_chatting", "Whether the player is currently chatting."},
     {"is_frozen", "Whether the player is frozen(freezetag)."},
     {NULL}
 };
@@ -761,7 +762,8 @@ static PyObject* PyMinqlx_PlayerState(PyObject* self, PyObject* args) {
         PyLong_FromLongLong(g_entities[client_id].client->ps.stats[STAT_FLIGHT_REFUEL]));
     PyStructSequence_SetItem(state, 11, flight);
 
-    PyStructSequence_SetItem(state, 12, PyBool_FromLong(g_entities[client_id].client->ps.pm_type == 4));
+    PyStructSequence_SetItem(state, 12, PyBool_FromLong(g_entities[client_id].client->ps.eFlags & EF_TALK != 0));
+    PyStructSequence_SetItem(state, 13, PyBool_FromLong(g_entities[client_id].client->ps.pm_type == 4));
 
     return state;
 }
