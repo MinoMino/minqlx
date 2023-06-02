@@ -433,8 +433,8 @@ def handle_kamikaze_explode(client_id, is_used_on_demand):
         return True
 
 def handle_damage(target_id, attacker_id, damage, dflags, mod):
-    target_player = minqlx.Player(target_id)
-    inflictor_player = minqlx.Player(attacker_id) if attacker_id is not None and attacker_id >= 0 else None
+    target_player = minqlx.Player(target_id) if target_id in range(0, 64) else None
+    inflictor_player = minqlx.Player(attacker_id) if attacker_id is not None and attacker_id in range(0, 64) else None
     # noinspection PyBroadException
     try:
         minqlx.EVENT_DISPATCHERS["damage"].dispatch(
