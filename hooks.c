@@ -223,6 +223,36 @@ void __cdecl My_G_StartKamikaze(gentity_t* ent) {
     if (client_id != -1)
         KamikazeExplodeDispatcher(client_id, is_used_on_demand);
 }
+
+void __cdecl My_G_Damage(
+    gentity_t* target, // entity that is being damaged
+    gentity_t* inflictor, // entity that is causing the damage
+    gentity_t* attacker, // entity that caused the inflictor to damage targ
+    vec3_t dir, // direction of the attack for knockback
+    vec3_t point, // point at which the damage is being inflicted, used for headshots
+    int damage, // amount of damage being inflicted
+    int dflags, // these flags are used to control how T_Damage works
+    int mod // means_of_death indicator
+    ) {
+    int target_id;
+    int attacker_id = -1;
+
+    G_Damage(target, inflictor, attacker, dir, point, damage, dflags, mod);
+
+    if (!target) {
+        return;
+    }
+
+    if (!target->client) {
+        return;
+    }
+
+    target_id = target - g_entities;
+
+    attacker_id = attacker - g_entities;
+
+    DamageDispatcher(target_id, attacker_id, damage, dflags, mod);
+}
 #endif
 
 // Hook static functions. Can be done before program even runs.
@@ -340,6 +370,13 @@ void HookVm(void) {
     res = Hook((void*)ClientSpawn, My_ClientSpawn, (void*)&ClientSpawn);
     if (res) {
         DebugPrint("ERROR: Failed to hook ClientSpawn: %d\n", res);
+        failed = 1;
+    }
+    count++;
+
+    res = Hook((void*)G_Damage, My_G_Damage, (void*)&G_Damage);
+    if (res) {
+        DebugPrint("ERROR: Failed to hook G_Damage: %d\n", res);
         failed = 1;
     }
     count++;

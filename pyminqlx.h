@@ -61,6 +61,7 @@ extern PyObject* client_spawn_handler;
 
 extern PyObject* kamikaze_use_handler;
 extern PyObject* kamikaze_explode_handler;
+extern PyObject* damage_handler;
 
 // Custom console command handler. These are commands added through Python that can be used
 // from the console or using RCON.
@@ -91,5 +92,6 @@ void ClientSpawnDispatcher(int client_id);
 
 void KamikazeUseDispatcher(int client_id);
 void KamikazeExplodeDispatcher(int client_id, int is_used_on_demand);
+void DamageDispatcher(int target_id, int attacker_id, int damage, int dflags, int mod);
 
 #endif /* PYMINQLX_H */

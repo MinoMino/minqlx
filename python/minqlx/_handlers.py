@@ -432,6 +432,20 @@ def handle_kamikaze_explode(client_id, is_used_on_demand):
         minqlx.log_exception()
         return True
 
+def handle_damage(target_id, attacker_id, damage, dflags, mod):
+    target_player = minqlx.Player(target_id) if target_id in range(0, 64) else target_id
+    attacker_player = (
+        minqlx.Player(attacker_id) if attacker_id in range(0, 64) else attacker_id
+    )
+
+    try:
+        minqlx.EVENT_DISPATCHERS["damage"].dispatch(
+            target_player, attacker_player, damage, dflags, mod
+        )
+    except:
+        minqlx.log_exception()
+        return True
+
 def handle_console_print(text):
     """Called whenever the server prints something to the console and when rcon is used."""
     try:
@@ -510,3 +524,4 @@ def register_handlers():
 
     minqlx.register_handler("kamikaze_use", handle_kamikaze_use)
     minqlx.register_handler("kamikaze_explode", handle_kamikaze_explode)
+    minqlx.register_handler("damage", handle_damage)

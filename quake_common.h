@@ -114,7 +114,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define FL_DROPPED_ITEM 0x00001000
 
-#define DAMAGE_NO_PROTECTION 0x00000008
+// damage flags
+#define DAMAGE_RADIUS             0x00000001 // damage was indirect
+#define DAMAGE_NO_ARMOR           0x00000002 // armor does not protect from this damage
+#define DAMAGE_NO_KNOCKBACK       0x00000004 // do not affect velocity, just view angles
+#define DAMAGE_NO_PROTECTION      0x00000008 // armor, shields, invulnerability, and godmode have no effect
+#define DAMAGE_NO_TEAM_PROTECTION 0x00000010 // armor, shields, invulnerability, and godmode have no effect
 
 typedef enum {qfalse, qtrue} qboolean;
 typedef unsigned char byte;
@@ -1565,6 +1570,7 @@ char* __cdecl My_ClientConnect(int clientNum, qboolean firstTime, qboolean isBot
 void __cdecl My_ClientSpawn(gentity_t* ent);
 
 void __cdecl My_G_StartKamikaze(gentity_t* ent);
+void __cdecl My_G_Damage(gentity_t* target, gentity_t* inflictor, gentity_t* attacker, vec3_t dir, vec3_t point, int damage, int dflags, int mod);
 #endif
 
 // Custom commands added using Cmd_AddCommand during initialization.
