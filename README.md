@@ -63,6 +63,7 @@ git clone https://github.com/MinoMino/minqlx-plugins.git
 wget https://bootstrap.pypa.io/get-pip.py
 sudo python3 get-pip.py
 rm get-pip.py
+export PIP_BREAK_SYSTEM_PACKAGES=1  # Workaround for Debian 12+ users
 sudo python3 -m pip install -r minqlx-plugins/requirements.txt
 ```
 

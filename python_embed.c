@@ -1,4 +1,5 @@
 #include <Python.h>
+#include <patchlevel.h>
 #include <structmember.h>
 #include <structseq.h>
 #include <stdlib.h>
@@ -1507,7 +1508,7 @@ static PyObject* PyMinqlx_ReplaceItems(PyObject* self, PyObject* args) {
     int entity_id = 0, item_id = 0;
     #if PY_VERSION_HEX < ((3 << 24) | (7 << 16))
     char *entity_classname = NULL, *item_classname = NULL;
-    #else 
+    #else
     const char *entity_classname = NULL, *item_classname = NULL;
     #endif
     gentity_t* ent;
