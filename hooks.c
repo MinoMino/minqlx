@@ -247,11 +247,9 @@ void __cdecl My_G_Damage(
         return;
     }
 
-    target_id = target->client->ps.clientNum;
+    target_id = target - g_entities;
 
-    if (attacker && attacker->client) {
-        attacker_id = attacker->client->ps.clientNum;
-    }
+    attacker_id = attacker - g_entities;
 
     DamageDispatcher(target_id, attacker_id, damage, dflags, mod);
 }
