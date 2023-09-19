@@ -1508,6 +1508,7 @@ typedef gentity_t* (__cdecl *LaunchItem_ptr)(gitem_t *item, vec3_t origin, vec3_
 typedef gentity_t* (__cdecl *Drop_Item_ptr)(gentity_t *ent, gitem_t *item, float angle);
 typedef void (__cdecl *G_StartKamikaze_ptr)(gentity_t *ent);
 typedef void (__cdecl *G_FreeEntity_ptr)(gentity_t *ed);
+typedef void (__cdecl *Sys_IsLANAddress_ptr)(netadr_t adr);
 
 // Some of them are initialized by Initialize(), but not all of them necessarily.
 extern Com_Printf_ptr Com_Printf;
@@ -1532,6 +1533,7 @@ extern SV_DropClient_ptr SV_DropClient;
 extern Sys_SetModuleOffset_ptr Sys_SetModuleOffset;
 extern SV_SpawnServer_ptr SV_SpawnServer;
 extern Cmd_ExecuteString_ptr Cmd_ExecuteString;
+extern Sys_IsLANAddress_ptr Sys_IsLANAddress;
 // VM functions.
 extern G_RunFrame_ptr G_RunFrame;
 extern G_AddEvent_ptr G_AddEvent;

@@ -53,6 +53,7 @@ SV_DropClient_ptr SV_DropClient;
 Sys_SetModuleOffset_ptr Sys_SetModuleOffset;
 SV_SpawnServer_ptr SV_SpawnServer;
 Cmd_ExecuteString_ptr Cmd_ExecuteString;
+Sys_IsLANAddress_ptr Sys_IsLANAddress;
 
 // VM functions
 G_RunFrame_ptr G_RunFrame;
@@ -130,6 +131,7 @@ static void SearchFunctions(void) {
 	STATIC_SEARCH(Sys_SetModuleOffset, PTRN_SYS_SETMODULEOFFSET, MASK_SYS_SETMODULEOFFSET);
 	STATIC_SEARCH(SV_SpawnServer, PTRN_SV_SPAWNSERVER, MASK_SV_SPAWNSERVER);
 	STATIC_SEARCH(Cmd_ExecuteString, PTRN_CMD_EXECUTESTRING, MASK_CMD_EXECUTESTRING);
+	STATIC_SEARCH(Sys_IsLANAddress, PTRN_SYS_ISLANADDRESS, MASK_SYS_ISLANADDRESS);
 
 	// Cmd_Argc is really small, making it hard to search for, so we use a reference to it instead.
 	if (SV_Map_f != NULL) {

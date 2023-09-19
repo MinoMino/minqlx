@@ -74,6 +74,10 @@ void __cdecl My_G_InitGame(int levelTime, int randomSeed, int restart) {
 #endif
 }
 
+qboolean __cdecl My_Sys_IsLANAddress(netadr_t adr) {
+    return qtrue;
+}
+
 // USED FOR PYTHON
 
 #ifndef NOPY
@@ -238,6 +242,12 @@ void HookStatic(void) {
     res = Hook((void*)Sys_SetModuleOffset, My_Sys_SetModuleOffset, (void*)&Sys_SetModuleOffset);
     if (res) {
 		DebugPrint("ERROR: Failed to hook Sys_SetModuleOffset: %d\n", res);
+		failed = 1;
+	}
+
+    res = Hook((void*)Sys_IsLANAddress, My_Sys_IsLANAddress, (void*)&Sys_IsLANAddress);
+    if (res) {
+		DebugPrint("ERROR: Failed to hook Sys_IsLANAddress: %d\n", res);
 		failed = 1;
 	}
 
