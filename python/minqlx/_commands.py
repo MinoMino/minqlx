@@ -36,7 +36,7 @@ class Command:
     def __init__(self, plugin, name, handler, permission, channels, exclude_channels, client_cmd_pass, client_cmd_perm, prefix, usage):
         if not (channels is None or hasattr(channels, "__iter__")):
             raise ValueError("'channels' must be a finite iterable or None.")
-        elif not (channels is None or hasattr(exclude_channels, "__iter__")):
+        if not (exclude_channels is None or hasattr(exclude_channels, "__iter__")):
             raise ValueError("'exclude_channels' must be a finite iterable or None.")
         self.plugin = plugin # Instance of the owner.
 
