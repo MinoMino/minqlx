@@ -16,7 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with minqlx. If not, see <http://www.gnu.org/licenses/>.
 
-import minqlx
+try:
+    import minqlx
+except ImportError:
+    pass
+
 import redis
 
 # ====================================================================
@@ -313,3 +317,45 @@ class Redis(AbstractDatabase):
             if Redis._pool:
                 Redis._pool.disconnect()
                 Redis._pool = None
+
+    if redis.VERSION > (3,):
+        def zincrby(self, name, value, amount=1):
+            return self.r.zincrby(name, amount, value)
+
+        def zadd(self, name, *args, **kwargs):
+            if len(args) == 1 and isinstance(args[0], dict):
+                # redis >= 3.* arguments given
+                return self.r.zadd(name, *args, **kwargs)
+
+            if len(args) > 0 and len(args) % 2 != 0:
+                raise redis.RedisError("ZADD requires an equal number of values and scores")
+
+            mapping = {}
+            for i in range(0, len(args), 2):
+                mapping[args[i + 1]] = args[i]
+
+            return self.r.zadd(name, mapping, **kwargs)
+
+        def msetnx(self, *args, **kwargs):
+            mapping = {}
+            if args:
+                if len(args) != 1 or not isinstance(args[0], dict):
+                    raise redis.RedisError("MSETNX requires **kwargs or a single dict arg")
+                mapping.update(args[0])
+
+            if kwargs:
+                mapping.update(kwargs)
+
+            return self.r.msetnx(mapping)
+
+        def mset(self, *args, **kwargs):
+            mapping = {}
+            if args:
+                if len(args) != 1 or not isinstance(args[0], dict):
+                    raise redis.RedisError("MSET requires **kwargs or a single dict arg")
+                mapping.update(args[0])
+
+            if kwargs:
+                mapping.update(kwargs)
+
+            return self.r.mset(mapping)

@@ -1,0 +1,28 @@
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  PIP_BREAK_SYSTEM_PACKAGES: "1"
+
+jobs:
+  test_redis:
+
+    strategy:
+      matrix:
+        redis-package-version: ["2.*", "3.*", "4.*", "5.*"]
+        os: ["ubuntu-24.04", "ubuntu-22.04", "ubuntu-20.04"]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Start Redis
+        uses: superchargejs/redis-github-action@1.1.0
+      - name: Install redis package
+        run: python3 -m pip install redis==${{ matrix.redis-package-version }}
+      - name: Run test
+        run: python3 -m unittest discover python/tests/
