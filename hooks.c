@@ -11,6 +11,7 @@
 #include "quake_common.h"
 #include "simple_hook.h"
 #include "patches.h"
+#include "steam_query_limit.h"
 
 #ifndef NOPY
 #include "pyminqlx.h"
@@ -22,6 +23,18 @@ void* qagame_dllentry;
 
 qboolean skipFrameDispatcher;
 static void SetTag(void);
+
+#ifdef STEAM_QUERY_LIMIT
+// Steam answers server queries with packets much larger than the request, so a query with a
+// forged source address can be used to flood someone else. Dropped queries are reported to the
+// server as handled, so they never reach Steam.
+int __cdecl My_SV_HandleSteamPacket(const netadr_t* from, const msg_t* msg) {
+    if (!SteamQueryLimit_Allow(from, msg))
+        return 1;
+
+    return SV_HandleSteamPacket(from, msg);
+}
+#endif
 
 void __cdecl My_Cmd_AddCommand(char* cmd, void* func) {
     if (!common_initialized) InitializeStatic();
@@ -240,6 +253,15 @@ void HookStatic(void) {
 		DebugPrint("ERROR: Failed to hook Sys_SetModuleOffset: %d\n", res);
 		failed = 1;
 	}
+
+#ifdef STEAM_QUERY_LIMIT
+    if (SV_HandleSteamPacket != NULL) {
+        // Not fatal if it fails, the server only runs without the limit then.
+        res = Hook((void*)SV_HandleSteamPacket, My_SV_HandleSteamPacket, (void*)&SV_HandleSteamPacket);
+        if (res)
+            DebugPrint("ERROR: Failed to hook SV_HandleSteamPacket: %d\n", res);
+    }
+#endif
 
     // ==============================
     //    ONLY NEEDED FOR PYTHON
