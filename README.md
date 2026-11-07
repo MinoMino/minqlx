@@ -108,6 +108,15 @@ can't tell who the owner is and will refuse to execute admin commands.
   - Default: `5`
 - `qlx_logsSize`: The maximum size in bytes of a log before it backs it up and starts on a fresh file. 0 means no limit.
   - Default: `5000000` (5 MB)
+- `qlx_steamQueryRate`: The number of server queries (A2S_INFO, A2S_PLAYER and A2S_RULES) per second that are answered
+for each source address. Further queries are dropped, so the server cannot be abused to flood someone else with forged
+queries. 0 disables the limit per source. Only available for the 64-bit server.
+  - Default: `1`
+- `qlx_steamQueryBurst`: The number of queries a source address can send at once before `qlx_steamQueryRate` applies.
+  - Default: `10`
+- `qlx_steamQueryGlobalRate`: The number of server queries per second that are answered for all source addresses
+together. 0 disables the limit. To turn the query limit off completely, set both rates to 0.
+  - Default: `10`
 
 Usage
 =====

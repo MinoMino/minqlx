@@ -16,8 +16,8 @@ CC = gcc
 CFLAGS += -shared -std=gnu11
 LDFLAGS_NOPY += -ldl
 LDFLAGS += $(shell (python3-config --libs --embed || python3-config --libs) | grep lpython)
-SOURCES_NOPY += dllmain.c commands.c simple_hook.c hooks.c misc.c maps_parser.c trampoline.c patches.c
-SOURCES += dllmain.c commands.c python_embed.c python_dispatchers.c simple_hook.c hooks.c misc.c maps_parser.c trampoline.c patches.c
+SOURCES_NOPY += dllmain.c commands.c simple_hook.c hooks.c misc.c maps_parser.c trampoline.c patches.c steam_query_limit.c
+SOURCES += dllmain.c commands.c python_embed.c python_dispatchers.c simple_hook.c hooks.c misc.c maps_parser.c trampoline.c patches.c steam_query_limit.c
 OBJS = $(SOURCES:.c=.o)
 OBJS_NOPY = $(SOURCES_NOPY:.c=.o)
 OUTPUT = $(BINDIR)/minqlx$(SUFFIX).so

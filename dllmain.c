@@ -10,6 +10,7 @@
 #include "quake_common.h"
 #include "patterns.h"
 #include "maps_parser.h"
+#include "steam_query_limit.h"
 #ifndef NOPY
 #include "pyminqlx.h"
 #endif
@@ -53,6 +54,7 @@ SV_DropClient_ptr SV_DropClient;
 Sys_SetModuleOffset_ptr Sys_SetModuleOffset;
 SV_SpawnServer_ptr SV_SpawnServer;
 Cmd_ExecuteString_ptr Cmd_ExecuteString;
+SV_HandleSteamPacket_ptr SV_HandleSteamPacket;
 
 // VM functions
 G_RunFrame_ptr G_RunFrame;
@@ -130,6 +132,16 @@ static void SearchFunctions(void) {
 	STATIC_SEARCH(Sys_SetModuleOffset, PTRN_SYS_SETMODULEOFFSET, MASK_SYS_SETMODULEOFFSET);
 	STATIC_SEARCH(SV_SpawnServer, PTRN_SV_SPAWNSERVER, MASK_SV_SPAWNSERVER);
 	STATIC_SEARCH(Cmd_ExecuteString, PTRN_CMD_EXECUTESTRING, MASK_CMD_EXECUTESTRING);
+
+#ifdef STEAM_QUERY_LIMIT
+	// Only needed for the query limit. The server works without it, so a missing function is
+	// no reason to exit.
+	SV_HandleSteamPacket = (SV_HandleSteamPacket_ptr) PatternSearchModule(&module, PTRN_SV_HANDLESTEAMPACKET, MASK_SV_HANDLESTEAMPACKET);
+	if (SV_HandleSteamPacket == NULL)
+		DebugPrint("WARNING: Unable to find SV_HandleSteamPacket. The Steam query limit is disabled.\n");
+	else
+		DebugPrint("SV_HandleSteamPacket: %p\n", SV_HandleSteamPacket);
+#endif
 
 	// Cmd_Argc is really small, making it hard to search for, so we use a reference to it instead.
 	if (SV_Map_f != NULL) {
@@ -221,6 +233,9 @@ void InitializeVm(void) {
 // Called after the game is initialized.
 void InitializeCvars(void) {
     sv_maxclients = Cvar_FindVar("sv_maxclients");
+#ifdef STEAM_QUERY_LIMIT
+    SteamQueryLimit_RegisterCvars();
+#endif
     
     cvars_initialized = 1;
 }

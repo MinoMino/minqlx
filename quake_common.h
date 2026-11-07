@@ -1494,6 +1494,7 @@ typedef void (__cdecl *Sys_SetModuleOffset_ptr)(char* moduleName, void* offset);
 typedef void (__cdecl *SV_LinkEntity_ptr)(sharedEntity_t* gEnt);
 typedef void (__cdecl *SV_SpawnServer_ptr)(char* server, qboolean killBots);
 typedef void (__cdecl *Cmd_ExecuteString_ptr)(const char* text);
+typedef int (__cdecl *SV_HandleSteamPacket_ptr)(const netadr_t* from, const msg_t* msg);
 // VM functions.
 typedef void (__cdecl *G_RunFrame_ptr)(int time);
 typedef void (__cdecl *G_AddEvent_ptr)(gentity_t* ent, int event, int eventParm);
@@ -1532,6 +1533,7 @@ extern SV_DropClient_ptr SV_DropClient;
 extern Sys_SetModuleOffset_ptr Sys_SetModuleOffset;
 extern SV_SpawnServer_ptr SV_SpawnServer;
 extern Cmd_ExecuteString_ptr Cmd_ExecuteString;
+extern SV_HandleSteamPacket_ptr SV_HandleSteamPacket;
 // VM functions.
 extern G_RunFrame_ptr G_RunFrame;
 extern G_AddEvent_ptr G_AddEvent;
@@ -1550,6 +1552,7 @@ extern G_FreeEntity_ptr G_FreeEntity;
 // Server replacement functions for hooks.
 void __cdecl My_Cmd_AddCommand(char* cmd, void* func);
 void __cdecl My_Sys_SetModuleOffset(char* moduleName, void* offset);
+int __cdecl My_SV_HandleSteamPacket(const netadr_t* from, const msg_t* msg);
 #ifndef NOPY
 void __cdecl My_SV_ExecuteClientCommand(client_t *cl, char *s, qboolean clientOK);
 void __cdecl My_SV_SendServerCommand(client_t* cl, char* fmt, ...);
