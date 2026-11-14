@@ -374,12 +374,15 @@ class PlayerLoadedDispatcher(EventDispatcher):
     def dispatch(self, player):
         return super().dispatch(player)
 
-class PlayerDisonnectDispatcher(EventDispatcher):
+class PlayerDisconnectDispatcher(EventDispatcher):
     """Event that triggers whenever a player disconnects. Cannot be cancelled."""
     name = "player_disconnect"
 
     def dispatch(self, player, reason):
         return super().dispatch(player, reason)
+
+# Old, misspelled name, kept so that code which refers to it keeps working.
+PlayerDisonnectDispatcher = PlayerDisconnectDispatcher
 
 class PlayerSpawnDispatcher(EventDispatcher):
     """Event that triggers when a player spawns. Cannot be cancelled."""
@@ -593,7 +596,7 @@ EVENT_DISPATCHERS.add_dispatcher(ChatEventDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(UnloadDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(PlayerConnectDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(PlayerLoadedDispatcher)
-EVENT_DISPATCHERS.add_dispatcher(PlayerDisonnectDispatcher)
+EVENT_DISPATCHERS.add_dispatcher(PlayerDisconnectDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(PlayerSpawnDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(KamikazeUseDispatcher)
 EVENT_DISPATCHERS.add_dispatcher(KamikazeExplodeDispatcher)
